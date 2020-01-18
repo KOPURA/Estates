@@ -20,14 +20,19 @@
         <img [src]="estate.image" />
     </ion-card>
     <ion-card-content>
-        <div *ngIf="isSaved;then save_button else remove_button"></div>
+        <div *ngIf="isSaved;then remove_button else save_button"></div>
         <ng-template #save_button>
             <button ion-button outline (click)="saveEstate()">
                 <ion-icon padding-right name="bookmark"></ion-icon>
                 Save To My Estates
             </button>
         </ng-template>
-        <ng-template #remove_button>laina</ng-template>
+        <ng-template #remove_button>
+            <button ion-button outline color="danger" (click)="removeEstate()">
+                <ion-icon padding-right name="close"></ion-icon>
+                Remove from my estates
+            </button>
+        </ng-template>
         <ion-grid padding-top>
             <ion-row>
                 <ion-col>{{estate.type}}</ion-col>

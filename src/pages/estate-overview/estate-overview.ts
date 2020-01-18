@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, AlertController, ToastController } from 'ionic-angular';
 import { EstatesProvider } from '../../providers/estates/estates';
 import { StorageProvider } from '../../providers/storage/storage';
 import { IEstate } from '../../providers/estates/estate';
@@ -27,6 +27,8 @@ export class EstateOverviewPage {
   constructor(
     public navCtrl: NavController,
     public navParams: NavParams,
+    public alertCtrl: AlertController,
+    public toastCtrl: ToastController,
     public estatesService: EstatesProvider,
     public storageService: StorageProvider
   ) {
@@ -46,6 +48,34 @@ export class EstateOverviewPage {
   }
 
   saveEstate(): void {
-    this.storageService.addEstate(this.estate).then(x => console.log(x)).catch(x => console.log(x));
+    this.storageService.addEstate(this.estate, this.location).then(() => this.isSaved = true);
+  }
+
+  removeEstate(): void {
+    this.alertCtrl.create({
+      title: 'Remove Estate',
+      message: 'Are you sure you want to remove from saved estates?',
+      buttons: [{
+        text: 'No',
+        role: 'cancel',
+        handler: () => {}
+      }, {
+        text: 'Yes',
+        handler: () =>  {
+          this.storageService.removeEstate(this.estate).then(() => {
+            this.isSaved = false;
+            this.showSuccessfulEstateRemovalToast();
+          })
+        }
+      }]
+    }).present();
+  }
+
+  private showSuccessfulEstateRemovalToast(): void {
+    this.toastCtrl.create({
+      message: 'Estate was removed successfully!',
+      duration: 2000,
+      position: 'bottom'
+    }).present();
   }
 }

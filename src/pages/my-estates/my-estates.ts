@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
 import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { StorageProvider } from '../../providers/storage/storage';
+import { IStoredEstate } from '../../providers/storage/stored-estate';
+import { EstateHomePage, LocationsPage } from '../../pages/pages';
 
 /**
  * Generated class for the MyEstatesPage page.
@@ -17,12 +20,32 @@ export class MyEstatesPage {
 
   private title: String = 'Royal Estates';
   private pageSubtitle: String = 'My Estates';
+  private savedEstates: IStoredEstate[] = [];
 
-  constructor(public navCtrl: NavController, public navParams: NavParams) {
+  constructor(
+    public navCtrl: NavController,
+    public navParams: NavParams,
+    public storageService: StorageProvider
+  ) {
+  }
+
+  ionViewWillEnter() {
+    this.storageService.getAllEstates().then(estates => {
+      this.savedEstates = estates;
+    });
   }
 
   ionViewDidLoad() {
-    console.log('ionViewDidLoad MyEstatesPage');
   }
 
+  toEstate(estate: IStoredEstate) {
+    this.navCtrl.push(EstateHomePage, {
+      location: estate.location,
+      estate: estate.estate
+    });
+  }
+
+  toLocationsPage() {
+    this.navCtrl.push(LocationsPage);
+  }
 }

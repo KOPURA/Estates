@@ -19,5 +19,39 @@
 </ion-header>
 
 <ion-content padding>
-    asdasd
+    <ion-card *ngIf="savedEstates.length">
+        <ion-card-header>
+            Saved Estates
+        </ion-card-header>
+
+        <ion-list>
+            <ion-item *ngFor="let estate of savedEstates">
+              <ion-thumbnail item-left>
+                  <img [src]="estate.estate.image">
+              </ion-thumbnail>
+              <h2>Ref No. {{estate.estate.refNumber}}</h2>
+              <p text-wrap>{{estate.estate.type}}, {{estate.estate.bedrooms}} Bedrooms</p>
+              <p padding-top text-wrap>{{estate.location.name}}, {{estate.estate.region}}</p>
+              <a item-right (click)="toEstate(estate)">View</a>
+            </ion-item>
+        </ion-list>
+    
+        <div padding>
+            <button ion-button (click)="toLocationsPage()">
+                <ion-icon padding-right name="search"></ion-icon>
+                Find a Location
+            </button>
+        </div>
+    </ion-card>
+    <ion-card *ngIf="!savedEstates.length">
+        <div padding>
+            <ion-label>
+                To save more estates, select a location, then you can save estates from their overview page.
+            </ion-label>
+            <button ion-button (click)="toLocationsPage()">
+                <ion-icon padding-right name="search"></ion-icon>
+                Find a Location
+            </button>
+        </div>
+    </ion-card>
 </ion-content>
