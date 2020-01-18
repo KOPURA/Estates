@@ -10,6 +10,7 @@ import { AgmCoreModule } from '@agm/core';
 
 import { MyApp } from './app.component';
 import { EstatesProvider } from '../providers/estates/estates';
+import { StorageProvider } from '../providers/storage/storage';
 import {
   MyEstatesPage,
   LocationsPage,
@@ -55,7 +56,8 @@ import {
     StatusBar,
     SplashScreen,
     {provide: ErrorHandler, useClass: IonicErrorHandler},
-    EstatesProvider
+    EstatesProvider,
+    StorageProvider
   ]
 })
 export class AppModule {}

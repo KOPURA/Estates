@@ -317,8 +317,9 @@ var MyEstatesPage = /** @class */ (function () {
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__angular_core__ = __webpack_require__(1);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_ionic_angular__ = __webpack_require__(29);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__providers_estates_estates__ = __webpack_require__(58);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_lodash__ = __webpack_require__(132);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_lodash___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_lodash__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__providers_storage_storage__ = __webpack_require__(717);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_lodash__ = __webpack_require__(132);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4_lodash___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4_lodash__);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
@@ -332,6 +333,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 
 
 
+
 /**
  * Generated class for the EstateOverviewPage page.
  *
@@ -339,31 +341,36 @@ var __metadata = (this && this.__metadata) || function (k, v) {
  * Ionic pages and navigation.
  */
 var EstateOverviewPage = /** @class */ (function () {
-    function EstateOverviewPage(navCtrl, navParams, estatesService) {
+    function EstateOverviewPage(navCtrl, navParams, estatesService, storageService) {
         this.navCtrl = navCtrl;
         this.navParams = navParams;
         this.estatesService = estatesService;
+        this.storageService = storageService;
         this.estate = this.navParams.data.estate;
         this.location = this.navParams.data.location;
     }
     EstateOverviewPage.prototype.ionViewDidLoad = function () {
+        var _this = this;
+        this.storageService.isSaved(this.estate).then(function (isSaved) { return _this.isSaved = isSaved; });
     };
     EstateOverviewPage.prototype.doRefresh = function (refresher) {
         var _this = this;
         this.estatesService.getEstates(this.location.id).subscribe(function (estates) {
-            _this.estate = __WEBPACK_IMPORTED_MODULE_3_lodash__["first"](__WEBPACK_IMPORTED_MODULE_3_lodash__["filter"](estates, function (estate) { return estate.id === _this.estate.id; }));
+            _this.estate = __WEBPACK_IMPORTED_MODULE_4_lodash__["first"](__WEBPACK_IMPORTED_MODULE_4_lodash__["filter"](estates, function (estate) { return estate.id === _this.estate.id; }));
             refresher.complete();
         });
     };
+    EstateOverviewPage.prototype.saveEstate = function () {
+        this.storageService.addEstate(this.estate).then(function (x) { return console.log(x); }).catch(function (x) { return console.log(x); });
+    };
     EstateOverviewPage = __decorate([
         Object(__WEBPACK_IMPORTED_MODULE_0__angular_core__["m" /* Component */])({
-            selector: 'page-estate-overview',template:/*ion-inline-start:"/app/src/pages/estate-overview/estate-overview.html"*/'<!--\n  Generated template for the EstateOverviewPage page.\n\n  See http://ionicframework.com/docs/components/#navigation for more info on\n  Ionic pages and navigation.\n-->\n<ion-header>\n    <ion-navbar>\n        <ion-title>EstateOverview</ion-title>\n    </ion-navbar>\n</ion-header>\n\n<ion-content padding>\n    <ion-refresher (ionRefresh)="doRefresh($event)">\n        <ion-refresher-content pullingIcon="arrow-dropdown" pullingText="Pull to refresh" refreshingSpinner="circles" refreshingText="Refreshing...">\n        </ion-refresher-content>\n    </ion-refresher>\n\n    <ion-card>\n        <img [src]="estate.image" />\n    </ion-card>\n    <ion-card-content>\n        <button ion-button outline>\n            <ion-icon padding-right name="bookmark"></ion-icon>\n            Save To My Estates\n        </button>\n        <ion-grid padding-top>\n            <ion-row>\n                <ion-col>{{estate.type}}</ion-col>\n                <ion-col>{{estate.area}} m<sup>2</sup></ion-col>\n            </ion-row>\n            <ion-row>\n                <ion-col><ion-badge>{{estate.bedrooms}}</ion-badge> Bedrooms</ion-col>\n                <ion-col>{{estate.price | currency:\'USD\':\'symbol\':\'1.2-2\'}}</ion-col>\n            </ion-row>\n            <p padding-top>{{estate.address}}</p>\n        </ion-grid>\n    </ion-card-content>\n</ion-content>\n'/*ion-inline-end:"/app/src/pages/estate-overview/estate-overview.html"*/,
+            selector: 'page-estate-overview',template:/*ion-inline-start:"/app/src/pages/estate-overview/estate-overview.html"*/'<!--\n  Generated template for the EstateOverviewPage page.\n\n  See http://ionicframework.com/docs/components/#navigation for more info on\n  Ionic pages and navigation.\n-->\n<ion-header>\n    <ion-navbar>\n        <ion-title>EstateOverview</ion-title>\n    </ion-navbar>\n</ion-header>\n\n<ion-content padding>\n    <ion-refresher (ionRefresh)="doRefresh($event)">\n        <ion-refresher-content pullingIcon="arrow-dropdown" pullingText="Pull to refresh" refreshingSpinner="circles" refreshingText="Refreshing...">\n        </ion-refresher-content>\n    </ion-refresher>\n\n    <ion-card>\n        <img [src]="estate.image" />\n    </ion-card>\n    <ion-card-content>\n        <div *ngIf="isSaved;then save_button else remove_button"></div>\n        <ng-template #save_button>\n            <button ion-button outline (click)="saveEstate()">\n                <ion-icon padding-right name="bookmark"></ion-icon>\n                Save To My Estates\n            </button>\n        </ng-template>\n        <ng-template #remove_button>laina</ng-template>\n        <ion-grid padding-top>\n            <ion-row>\n                <ion-col>{{estate.type}}</ion-col>\n                <ion-col>{{estate.area}} m<sup>2</sup></ion-col>\n            </ion-row>\n            <ion-row>\n                <ion-col><ion-badge>{{estate.bedrooms}}</ion-badge> Bedrooms</ion-col>\n                <ion-col>{{estate.price | currency:\'USD\':\'symbol\':\'1.2-2\'}}</ion-col>\n            </ion-row>\n            <p padding-top>{{estate.address}}</p>\n        </ion-grid>\n    </ion-card-content>\n</ion-content>\n'/*ion-inline-end:"/app/src/pages/estate-overview/estate-overview.html"*/,
         }),
-        __metadata("design:paramtypes", [__WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* NavController */],
-            __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["h" /* NavParams */],
-            __WEBPACK_IMPORTED_MODULE_2__providers_estates_estates__["a" /* EstatesProvider */]])
+        __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* NavController */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["g" /* NavController */]) === "function" && _a || Object, typeof (_b = typeof __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["h" /* NavParams */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_1_ionic_angular__["h" /* NavParams */]) === "function" && _b || Object, typeof (_c = typeof __WEBPACK_IMPORTED_MODULE_2__providers_estates_estates__["a" /* EstatesProvider */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_2__providers_estates_estates__["a" /* EstatesProvider */]) === "function" && _c || Object, typeof (_d = typeof __WEBPACK_IMPORTED_MODULE_3__providers_storage_storage__["a" /* StorageProvider */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_3__providers_storage_storage__["a" /* StorageProvider */]) === "function" && _d || Object])
     ], EstateOverviewPage);
     return EstateOverviewPage;
+    var _a, _b, _c, _d;
 }());
 
 //# sourceMappingURL=estate-overview.js.map
@@ -551,13 +558,15 @@ Object(__WEBPACK_IMPORTED_MODULE_0__angular_platform_browser_dynamic__["a" /* pl
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__agm_core__ = __webpack_require__(315);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__app_component__ = __webpack_require__(706);
 /* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__providers_estates_estates__ = __webpack_require__(58);
-/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__pages_pages__ = __webpack_require__(45);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10__providers_storage_storage__ = __webpack_require__(717);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11__pages_pages__ = __webpack_require__(45);
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
+
 
 
 
@@ -576,13 +585,13 @@ var AppModule = /** @class */ (function () {
         Object(__WEBPACK_IMPORTED_MODULE_1__angular_core__["I" /* NgModule */])({
             declarations: [
                 __WEBPACK_IMPORTED_MODULE_8__app_component__["a" /* MyApp */],
-                __WEBPACK_IMPORTED_MODULE_10__pages_pages__["f" /* MyEstatesPage */],
-                __WEBPACK_IMPORTED_MODULE_10__pages_pages__["e" /* LocationsPage */],
-                __WEBPACK_IMPORTED_MODULE_10__pages_pages__["d" /* EstatesPage */],
-                __WEBPACK_IMPORTED_MODULE_10__pages_pages__["a" /* EstateHomePage */],
-                __WEBPACK_IMPORTED_MODULE_10__pages_pages__["c" /* EstateOverviewPage */],
-                __WEBPACK_IMPORTED_MODULE_10__pages_pages__["b" /* EstateMapPage */],
-                __WEBPACK_IMPORTED_MODULE_10__pages_pages__["g" /* SimilarEstatesPage */]
+                __WEBPACK_IMPORTED_MODULE_11__pages_pages__["f" /* MyEstatesPage */],
+                __WEBPACK_IMPORTED_MODULE_11__pages_pages__["e" /* LocationsPage */],
+                __WEBPACK_IMPORTED_MODULE_11__pages_pages__["d" /* EstatesPage */],
+                __WEBPACK_IMPORTED_MODULE_11__pages_pages__["a" /* EstateHomePage */],
+                __WEBPACK_IMPORTED_MODULE_11__pages_pages__["c" /* EstateOverviewPage */],
+                __WEBPACK_IMPORTED_MODULE_11__pages_pages__["b" /* EstateMapPage */],
+                __WEBPACK_IMPORTED_MODULE_11__pages_pages__["g" /* SimilarEstatesPage */]
             ],
             imports: [
                 __WEBPACK_IMPORTED_MODULE_0__angular_platform_browser__["a" /* BrowserModule */],
@@ -606,19 +615,20 @@ var AppModule = /** @class */ (function () {
             bootstrap: [__WEBPACK_IMPORTED_MODULE_3_ionic_angular__["a" /* IonicApp */]],
             entryComponents: [
                 __WEBPACK_IMPORTED_MODULE_8__app_component__["a" /* MyApp */],
-                __WEBPACK_IMPORTED_MODULE_10__pages_pages__["f" /* MyEstatesPage */],
-                __WEBPACK_IMPORTED_MODULE_10__pages_pages__["e" /* LocationsPage */],
-                __WEBPACK_IMPORTED_MODULE_10__pages_pages__["d" /* EstatesPage */],
-                __WEBPACK_IMPORTED_MODULE_10__pages_pages__["a" /* EstateHomePage */],
-                __WEBPACK_IMPORTED_MODULE_10__pages_pages__["c" /* EstateOverviewPage */],
-                __WEBPACK_IMPORTED_MODULE_10__pages_pages__["b" /* EstateMapPage */],
-                __WEBPACK_IMPORTED_MODULE_10__pages_pages__["g" /* SimilarEstatesPage */]
+                __WEBPACK_IMPORTED_MODULE_11__pages_pages__["f" /* MyEstatesPage */],
+                __WEBPACK_IMPORTED_MODULE_11__pages_pages__["e" /* LocationsPage */],
+                __WEBPACK_IMPORTED_MODULE_11__pages_pages__["d" /* EstatesPage */],
+                __WEBPACK_IMPORTED_MODULE_11__pages_pages__["a" /* EstateHomePage */],
+                __WEBPACK_IMPORTED_MODULE_11__pages_pages__["c" /* EstateOverviewPage */],
+                __WEBPACK_IMPORTED_MODULE_11__pages_pages__["b" /* EstateMapPage */],
+                __WEBPACK_IMPORTED_MODULE_11__pages_pages__["g" /* SimilarEstatesPage */]
             ],
             providers: [
                 __WEBPACK_IMPORTED_MODULE_5__ionic_native_status_bar__["a" /* StatusBar */],
                 __WEBPACK_IMPORTED_MODULE_4__ionic_native_splash_screen__["a" /* SplashScreen */],
                 { provide: __WEBPACK_IMPORTED_MODULE_1__angular_core__["u" /* ErrorHandler */], useClass: __WEBPACK_IMPORTED_MODULE_3_ionic_angular__["b" /* IonicErrorHandler */] },
-                __WEBPACK_IMPORTED_MODULE_9__providers_estates_estates__["a" /* EstatesProvider */]
+                __WEBPACK_IMPORTED_MODULE_9__providers_estates_estates__["a" /* EstatesProvider */],
+                __WEBPACK_IMPORTED_MODULE_10__providers_storage_storage__["a" /* StorageProvider */]
             ]
         })
     ], AppModule);
@@ -771,6 +781,75 @@ var MyApp = /** @class */ (function () {
 }());
 
 //# sourceMappingURL=app.component.js.map
+
+/***/ }),
+
+/***/ 717:
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return StorageProvider; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__ionic_storage__ = __webpack_require__(715);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__angular_core__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_lodash__ = __webpack_require__(132);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_lodash___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_lodash__);
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+
+
+
+/*
+  Generated class for the StorageProvider provider.
+
+  See https://angular.io/guide/dependency-injection for more info on providers
+  and Angular DI.
+*/
+var StorageProvider = /** @class */ (function () {
+    function StorageProvider(storage) {
+        this.storage = storage;
+        this.storageKey = "estates";
+    }
+    StorageProvider.prototype.addEstate = function (estate) {
+        var _this = this;
+        this.storage.ready().then(function () {
+            _this.storage.get(_this.storageKey).then(function (estates) {
+                estates = estates || {};
+                estates[estate.id] = estate;
+                _this.storage.set(_this.storageKey, estates);
+            })
+                .catch(Promise.resolve(false));
+        });
+    };
+    StorageProvider.prototype.getAllEstates = function () {
+        var _this = this;
+        return this.storage.ready()
+            .then(function () {
+            return _this.storage.get(_this.storageKey)
+                .then(function (estates) { return __WEBPACK_IMPORTED_MODULE_2_lodash__["values"](estates || {}); })
+                .catch(function () { return []; });
+        });
+    };
+    StorageProvider.prototype.isSaved = function (estate) {
+        return this.getAllEstates()
+            .then(Promise.resolve(function (estates) { console.log(estate.id in estates); console.log(estates); return estate.id in estates; }))
+            .catch(Promise.resolve(false));
+    };
+    StorageProvider = __decorate([
+        Object(__WEBPACK_IMPORTED_MODULE_1__angular_core__["A" /* Injectable */])(),
+        __metadata("design:paramtypes", [typeof (_a = typeof __WEBPACK_IMPORTED_MODULE_0__ionic_storage__["b" /* Storage */] !== "undefined" && __WEBPACK_IMPORTED_MODULE_0__ionic_storage__["b" /* Storage */]) === "function" && _a || Object])
+    ], StorageProvider);
+    return StorageProvider;
+    var _a;
+}());
+
+//# sourceMappingURL=storage.js.map
 
 /***/ })
 

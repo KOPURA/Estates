@@ -20,10 +20,14 @@
         <img [src]="estate.image" />
     </ion-card>
     <ion-card-content>
-        <button ion-button outline>
-            <ion-icon padding-right name="bookmark"></ion-icon>
-            Save To My Estates
-        </button>
+        <div *ngIf="isSaved;then save_button else remove_button"></div>
+        <ng-template #save_button>
+            <button ion-button outline (click)="saveEstate()">
+                <ion-icon padding-right name="bookmark"></ion-icon>
+                Save To My Estates
+            </button>
+        </ng-template>
+        <ng-template #remove_button>laina</ng-template>
         <ion-grid padding-top>
             <ion-row>
                 <ion-col>{{estate.type}}</ion-col>
