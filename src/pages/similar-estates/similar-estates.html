@@ -11,7 +11,7 @@
 </ion-header>
 
 <ion-content>
-  <ion-segment [(ngModel)]="region" (ionChange)="segmentChanged($event)">
+  <ion-segment [(ngModel)]="region">
     <ion-segment-button value="all">
       All
     </ion-segment-button>
@@ -30,23 +30,19 @@
     </ion-item>
   </ion-card>
 
-  <ng-container *ngFor="let region of filteredRegions">
-    <ion-item-group *ngIf="shouldShowRegion(region)">
-      <ion-item-divider color="secondary">
-          <ion-label>{{region}}</ion-label>
+  <ion-list [virtualScroll]="estates" [headerFn]="calculateHeader">
+      <ion-item-divider *virtualHeader="let header" color="secondary">
+          <ion-label>{{header}}</ion-label>
       </ion-item-divider>
 
-      <ng-container *ngFor="let estate of estatesByRegion[region]">
-        <ion-item *ngIf="!filteringEnabled || estate.type === selectedType">
-          <ion-thumbnail item-left>
-              <img [src]="estate.image">
-          </ion-thumbnail>
-          <h2>Ref No. {{estate.refNumber}}</h2>
-          <p text-wrap>{{estate.type}}, {{estate.bedrooms}} Bedrooms</p>
-          <p padding-top text-wrap>{{location.name}}, {{estate.region}}</p>
-          <a item-right (click)="toEstate(estate)">View</a>
-        </ion-item>
-      </ng-container>
-    </ion-item-group>
-  </ng-container>
+      <ion-item *virtualItem="let estate">
+        <ion-thumbnail item-left>
+            <ion-img [src]="estate.image"></ion-img>
+        </ion-thumbnail>
+        <h2>Ref No. {{estate.refNumber}}</h2>
+        <p text-wrap>{{estate.type}}, {{estate.bedrooms}} Bedrooms</p>
+        <p padding-top text-wrap>{{location.name}}, {{estate.region}}</p>
+        <a item-right (click)="toEstate(estate)">View</a>
+      </ion-item>
+  </ion-list>
 </ion-content>

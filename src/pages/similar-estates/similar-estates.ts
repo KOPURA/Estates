@@ -30,6 +30,8 @@ export class SimilarEstatesPage {
   private filteredRegions: Array<string>;
   private estatesByRegion: object;
 
+  private _estates: IEstate[] = [];
+
   private selectedType: string;
   private filteringEnabled: boolean;
 
@@ -48,38 +50,44 @@ export class SimilarEstatesPage {
     this.filteringEnabled = false;
   }
 
+  get estates(): IEstate[] {
+    let estates = this.getFilteredEstates(this.region);
+    if (this.filteringEnabled) {
+      estates = _.filter(estates, e => e.type === this.selectedType);
+    }
+    return estates;
+  }
+
+  set estates(estates: IEstate[]) {
+    this._estates = estates;
+  }
+
   ionViewDidLoad(): void {
     let loadingInstance = this.loadingCtrl.create({content: "Fetching similar estates..."})
     loadingInstance
       .present()
       .then(() => {
         this.estatesService.getEstates(this.location.id).subscribe(estates => {
-            this.estatesByRegion = _.groupBy(estates, 'region');
+            this.estates = estates;
 
             this.allRegions = _.uniq(_.map(estates, estate => estate.region));
-            this.filteredRegions = this.getFilteredRegions(this.region);
 
             loadingInstance.dismiss();
           });
       });
   }
 
-  private segmentChanged(event): void  {
-    this.filteredRegions = this.getFilteredRegions(this.region);
-  }
-
-  private getFilteredRegions(region: string): string[] {
-    return region === 'all'
-      ? this.allRegions
-      : _.filter(this.allRegions, r => r === this.estate.region);
-  }
-
-  private shouldShowRegion(region: string): boolean {
-    if (!this.filteringEnabled) {
-      return true;
+  private calculateHeader(record, recordIndex, records): any {
+    if (recordIndex == 0 || (record.region !== records[recordIndex -1].region)) {
+      return record.region;
     }
-    let filteredEstates = _.filter(this.estatesByRegion[region], e => e.type === this.selectedType);
-    return filteredEstates.length > 0;
+    return null;
+  }
+
+  private getFilteredEstates(region: string): IEstate[] {
+    return region === 'all'
+      ? this._estates
+      : _.filter(this._estates, e => e.region === this.estate.region);
   }
 
   private toEstate(estate: IEstate): void {
